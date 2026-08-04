@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Behruzbek Bekturdiyev</title>
+  <meta name="description" content="Behruzbek Bekturdiyev — Yosh dasturchi portfolio"/>
+  <meta name="theme-color" content="#05050f"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Behruzbek Bekturdiyev — Yosh dasturchi"/>
+  <meta property="og:description" content="15 yoshli dasturlashga ishtiyoqli yosh mutaxassisning portfolio sayti."/>
+  <meta property="og:image" content="B.png"/>
+  <meta name="twitter:card" content="summary"/>
+  <link rel="icon" href="B.png"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --p:#4361ee;--pg:rgba(67,97,238,0.25);--bg:#05050f;
+      --card:rgba(255,255,255,0.02);--border:rgba(67,97,238,0.15);
+      --text:#fff;--muted:#8888a0;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-serif;scroll-behavior:smooth;overflow-x:hidden;}
+    body.light{--bg:#f5f7ff;--card:rgba(67,97,238,0.04);--border:rgba(67,97,238,0.15);--text:#0a0a1a;--muted:#666;}
+    body.light nav{background:rgba(245,247,255,0.92);}
+    body.light .hero h1{background:linear-gradient(135deg,#0a0a1a 40%,#4361ee);-webkit-background-clip:text;background-clip:text;}
+    body.light .mem-card{background:rgba(67,97,238,0.08);}
+    canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar{width:4px;}
+    ::-webkit-scrollbar-track{background:var(--bg);}
+    ::-webkit-scrollbar-thumb{background:var(--p);border-radius:4px;}
+
+    /* NAV */
+    nav{position:fixed;top:0;width:100%;background:rgba(5,5,15,0.88);backdrop-filter:blur(20px);padding:14px 60px;display:flex;justify-content:space-between;align-items:center;z-index:100;border-bottom:1px solid var(--border);}
+    .logo{display:flex;align-items:center;gap:10px;}
+    .logo img{height:40px;border-radius:8px;filter:drop-shadow(0 0 12px var(--pg));display:block;}
+    .logo svg{display:none;}
+    nav ul{list-style:none;display:flex;gap:24px;align-items:center;}
+    nav ul a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;transition:color 0.3s;position:relative;letter-spacing:0.3px;}
+    nav ul a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1.5px;background:var(--p);transition:width 0.3s;}
+    nav ul a:hover{color:var(--text);}
+    nav ul a:hover::after{width:100%;}
+    .theme-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:20px;cursor:pointer;font-size:12px;transition:all 0.3s;font-weight:500;}
+    .theme-btn:hover{border-color:var(--p);color:var(--p);}
+    .burger{display:none;background:transparent;border:none;color:var(--text);font-size:22px;cursor:pointer;z-index:101;}
+
+    /* CURSOR GLOW (signature) */
+    .glow-orb{position:fixed;width:340px;height:340px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(67,97,238,0.16) 0%,rgba(67,97,238,0) 70%);transform:translate(-50%,-50%);transition:opacity 0.3s;left:-999px;top:-999px;}
+
+    /* BACK TO TOP */
+    .to-top{position:fixed;bottom:26px;right:26px;width:46px;height:46px;border-radius:50%;background:var(--p);color:#fff;border:none;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:0 6px 20px var(--pg);opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.2s;z-index:99;}
+    .to-top.show{opacity:1;pointer-events:auto;}
+    .to-top:hover{transform:translateY(-3px);}
+
+    /* HERO */
+    .hero{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;z-index:1;padding:0 24px;}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(67,97,238,0.08);border:1px solid rgba(67,97,238,0.25);color:var(--p);font-size:12px;padding:7px 20px;border-radius:30px;margin-bottom:28px;letter-spacing:0.5px;font-weight:500;}
+    .badge-dot{width:6px;height:6px;background:#06d6a0;border-radius:50%;animation:blink 1.5s infinite;}
+    .hero h1{font-size:62px;font-weight:800;margin-bottom:18px;background:linear-gradient(135deg,#fff 50%,#4361ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;letter-spacing:-1px;}
+    .typing-wrap{font-size:18px;color:var(--p);margin-bottom:16px;min-height:28px;font-weight:600;letter-spacing:0.3px;}
+    .cursor{display:inline-block;width:2px;height:20px;background:var(--p);margin-left:2px;animation:blink 0.8s infinite;vertical-align:middle;}
+    .hero p{font-size:15px;color:var(--muted);margin-bottom:40px;max-width:460px;line-height:1.9;font-weight:400;}
+    .hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+    .btn-p{background:var(--p);color:#fff;padding:14px 36px;border-radius:30px;text-decoration:none;font-size:14px;font-weight:600;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 4px 24px var(--pg);letter-spacing:0.3px;}
+    .btn-p:hover{transform:translateY(-3px);box-shadow:0 12px 32px var(--pg);}
+    .btn-s{border:1px solid rgba(67,97,238,0.4);color:var(--p);padding:14px 36px;border-radius:30px;text-decoration:none;font-size:14px;font-weight:600;transition:all 0.2s;letter-spacing:0.3px;}
+    .btn-s:hover{background:rgba(67,97,238,0.08);border-color:var(--p);}
+
+    /* SCROLL REVEAL */
+    .reveal{opacity:0;transform:translateY(36px);transition:opacity 0.8s ease,transform 0.8s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+    .reveal-left{opacity:0;transform:translateX(-36px);transition:opacity 0.8s ease,transform 0.8s ease;}
+    .reveal-left.visible{opacity:1;transform:translateX(0);}
+    .reveal-right{opacity:0;transform:translateX(36px);transition:opacity 0.8s ease,transform 0.8s ease;}
+    .reveal-right.visible{opacity:1;transform:translateX(0);}
+
+    /* SECTIONS */
+    section{padding:110px 60px;max-width:1000px;margin:0 auto;position:relative;z-index:1;}
+    .sec-label{font-size:11px;color:var(--p);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;font-weight:600;}
+    section h2{font-size:36px;font-weight:800;margin-bottom:44px;letter-spacing:-0.5px;}
+    section h2 span{color:var(--p);}
+    .divider{width:40px;height:3px;background:var(--p);border-radius:2px;margin-bottom:44px;margin-top:-32px;}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;transition:border-color 0.3s,transform 0.3s,box-shadow 0.3s;}
+    .card:hover{border-color:rgba(67,97,238,0.4);transform:translateY(-5px);box-shadow:0 12px 40px rgba(67,97,238,0.12);}
+
+    /* HAQIMDA */
+    .about-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:start;}
+    .about-text p{font-size:15px;color:var(--muted);line-height:2;margin-bottom:16px;}
+    .about-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .stat-card{background:rgba(67,97,238,0.06);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center;transition:all 0.3s;}
+    .stat-card:hover{border-color:var(--p);box-shadow:0 4px 20px var(--pg);}
+    .stat-num{font-size:36px;font-weight:800;color:var(--p);text-shadow:0 0 24px var(--pg);line-height:1;}
+    .stat-lbl{font-size:12px;color:var(--muted);margin-top:6px;font-weight:500;letter-spacing:0.5px;}
+    .quote-box{background:rgba(67,97,238,0.04);border-left:3px solid var(--p);border-radius:0 12px 12px 0;padding:20px 24px;margin-top:28px;font-size:14px;color:var(--muted);font-style:italic;line-height:1.9;}
+
+    /* SKILLS */
+    .skills-list{display:flex;flex-direction:column;gap:20px;}
+    .skill-row{display:flex;align-items:center;gap:18px;}
+    .skill-row .skill-icon{font-size:24px;width:44px;text-align:center;flex-shrink:0;}
+    .skill-row-main{flex:1;}
+    .skill-row-top{display:flex;justify-content:space-between;margin-bottom:8px;}
+    .skill-row-top .skill-name{font-size:13px;color:var(--text);font-weight:700;letter-spacing:0.3px;}
+    .skill-row-top .skill-pct{font-size:12px;color:var(--p);font-weight:700;}
+    .skill-track{height:8px;border-radius:6px;background:rgba(67,97,238,0.1);border:1px solid var(--border);overflow:hidden;}
+    .skill-fill{height:100%;border-radius:6px;width:0;background:linear-gradient(90deg,var(--p),#06d6a0);transition:width 1.4s cubic-bezier(.16,1,.3,1);}
+    .skill-card{padding:28px 14px;text-align:center;border-radius:18px;}
+    .skill-icon{font-size:32px;margin-bottom:12px;display:block;}
+    .skill-name{font-size:13px;color:var(--muted);font-weight:600;letter-spacing:0.3px;}
+
+    /* MAQSADLAR */
+    .goals-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .goal-card{padding:22px 24px;display:flex;align-items:flex-start;gap:16px;border-radius:18px;}
+    .g-icon{font-size:18px;width:44px;height:44px;background:rgba(67,97,238,0.08);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--border);}
+    .g-title{font-size:14px;font-weight:700;margin-bottom:5px;color:var(--text);}
+    .g-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+
+    /* LOYIHALAR */
+    .projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:40px;}
+    .project-card{padding:26px;border-radius:18px;will-change:transform;transform-style:preserve-3d;}
+    .p-tag{display:inline-block;background:rgba(67,97,238,0.1);color:var(--p);font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:14px;letter-spacing:1.5px;text-transform:uppercase;}
+    .p-title{font-size:16px;font-weight:700;margin-bottom:8px;letter-spacing:-0.2px;}
+    .p-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+
+    /* O'YIN */
+    .game-wrapper{margin-top:12px;}
+    .game-box{padding:32px;border-radius:18px;}
+    .game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+    .game-title{font-size:18px;font-weight:700;color:var(--text);}
+    .game-info{display:flex;gap:16px;}
+    .game-info span{font-size:13px;color:var(--muted);background:rgba(67,97,238,0.08);padding:4px 12px;border-radius:10px;}
+    .game-info b{color:var(--p);}
+    .game-subtitle{font-size:13px;color:var(--muted);margin-bottom:20px;}
+    .memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+    .mem-card{height:68px;background:rgba(67,97,238,0.1);border:1px solid var(--border);border-radius:14px;cursor:pointer;font-size:26px;display:flex;align-items:center;justify-content:center;transition:all 0.25s;user-select:none;font-weight:700;}
+    .mem-card:hover{background:rgba(67,97,238,0.18);border-color:var(--p);}
+    .mem-card.flipped{background:rgba(67,97,238,0.25);border-color:var(--p);transform:scale(1.04);}
+    .mem-card.matched{background:rgba(6,214,160,0.15);border-color:#06d6a0;cursor:default;}
+    .game-btn{background:var(--p);color:#fff;border:none;padding:10px 24px;border-radius:20px;cursor:pointer;font-size:13px;font-weight:700;transition:all 0.2s;box-shadow:0 4px 16px var(--pg);letter-spacing:0.3px;}
+    .game-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--pg);}
+    .win-msg{display:none;font-size:15px;color:#06d6a0;font-weight:700;margin-top:14px;padding:12px 20px;background:rgba(6,214,160,0.08);border-radius:12px;border:1px solid rgba(6,214,160,0.2);}
+
+    /* SERTIFIKAT */
+    .cert-card{padding:32px;border-radius:18px;position:relative;overflow:hidden;}
+    .cert-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--p),#06d6a0);}
+    .cert-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;}
+    .cert-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(67,97,238,0.08);border:1px solid var(--border);color:var(--p);font-size:11px;padding:5px 14px;border-radius:20px;font-weight:700;letter-spacing:0.5px;}
+    .cert-year{font-size:42px;font-weight:800;color:rgba(67,97,238,0.1);line-height:1;font-family:monospace;}
+    .cert-title{font-size:20px;font-weight:800;margin-bottom:6px;letter-spacing:-0.3px;}
+    .cert-org{font-size:13px;color:var(--p);font-weight:700;margin-bottom:10px;letter-spacing:0.3px;}
+    .cert-desc{font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:20px;}
+    .cert-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:16px;}
+    .cert-date{font-size:12px;color:var(--muted);font-weight:500;}
+    .cert-num{font-size:11px;color:var(--p);font-family:monospace;background:rgba(67,97,238,0.08);padding:4px 10px;border-radius:8px;font-weight:700;}
+
+    /* BOG'LANISH */
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .contact-card{padding:22px 24px;display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--text);border-radius:18px;}
+    .c-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;font-weight:700;}
+    .c-blue{background:rgba(67,97,238,0.1);border:1px solid rgba(67,97,238,0.2);}
+    .c-green{background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.2);}
+    .c-red{background:rgba(234,67,53,0.1);border:1px solid rgba(234,67,53,0.2);}
+    .c-tg{background:rgba(0,136,204,0.1);border:1px solid rgba(0,136,204,0.2);}
+    .c-ig{background:rgba(225,48,108,0.1);border:1px solid rgba(225,48,108,0.2);}
+    .c-yt{background:rgba(255,0,0,0.1);border:1px solid rgba(255,0,0,0.2);}
+    .c-label{font-size:11px;color:var(--muted);margin-bottom:3px;font-weight:500;letter-spacing:0.5px;text-transform:uppercase;}
+    .c-val{font-size:14px;font-weight:600;}
+
+    footer{text-align:center;padding:36px;color:var(--muted);font-size:12px;position:relative;z-index:1;border-top:1px solid var(--border);letter-spacing:0.3px;}
+    footer b{color:var(--p);}
+
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+    @keyframes fadeDown{from{opacity:0;transform:translateY(-24px);}to{opacity:1;transform:translateY(0);}}
+
+    /* CONFETTI */
+    .confetti{position:fixed;top:-10px;width:8px;height:14px;z-index:200;pointer-events:none;}
+
+    /* RESPONSIVE */
+    @media (max-width:900px){
+      section{padding:90px 32px;}
+      .about-grid{grid-template-columns:1fr;}
+      .goals-grid,.projects-grid,.contact-grid{grid-template-columns:1fr;}
+      .hero h1{font-size:44px;}
+    }
+    @media (max-width:768px){
+      nav{padding:14px 20px;}
+      .burger{display:block;}
+      nav ul{position:fixed;top:68px;left:0;width:100%;background:rgba(5,5,15,0.98);backdrop-filter:blur(20px);flex-direction:column;align-items:flex-start;padding:20px 24px;gap:18px;border-bottom:1px solid var(--border);transform:translateY(-140%);opacity:0;transition:transform 0.35s ease,opacity 0.35s ease;}
+      body.light nav ul{background:rgba(245,247,255,0.98);}
+      nav ul.open{transform:translateY(0);opacity:1;}
+      .to-top{right:16px;bottom:16px;width:40px;height:40px;}
+      .memory-grid{grid-template-columns:repeat(4,1fr);gap:6px;}
+      .mem-card{height:52px;font-size:20px;}
+    }
+    @media (max-width:480px){
+      .hero h1{font-size:32px;}
+      .hero p{font-size:13px;}
+      section h2{font-size:26px;}
+      .stat-num{font-size:28px;}
+      .skill-row{gap:12px;}
+    }
+    @media (prefers-reduced-motion:reduce){
+      *{animation-duration:0.001ms !important;transition-duration:0.001ms !important;}
+    }
+  </style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<nav>
+  <div class="logo">
+    <img src="B.png" alt="BB" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+    <svg width="40" height="40" viewBox="0 0 40 40" style="display:none">
+      <rect width="40" height="40" rx="10" fill="#4361ee"/>
+      <text x="20" y="27" text-anchor="middle" font-family="Segoe UI" font-weight="800" font-size="16" fill="white">BB</text>
+    </svg>
+  </div>
+  <ul id="navList">
+    <li><a href="#haqimda">Haqimda</a></li>
+    <li><a href="#konikmalar">Ko'nikmalar</a></li>
+    <li><a href="#maqsadlar">Maqsadlar</a></li>
+    <li><a href="#loyihalar">Loyihalar</a></li>
+    <li><a href="#sertifikatlar">Sertifikatlar</a></li>
+    <li><a href="#boglanish">Bog'lanish</a></li>
+    <li><button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button></li>
+  </ul>
+  <button class="burger" id="burgerBtn" onclick="toggleNav()">☰</button>
+</nav>
+<div class="glow-orb" id="glowOrb"></div>
+<button class="to-top" id="toTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge"><span class="badge-dot"></span> Faol · Yangariq, Xorazm</div>
+  <h1>Behruzbek Bekturdiyev</h1>
+  <div class="typing-wrap"><span id="typing"></span><span class="cursor"></span></div>
+  <p>15 yoshli dasturlashga ishtiyoqli yosh mutaxassis. Kelajakda dunyo miqyosidagi dasturchi bo'lishga intilaman.</p>
+  <div class="hero-btns">
+    <a href="#loyihalar" class="btn-p">Loyihalarim 🚀</a>
+    <a href="#boglanish" class="btn-s">Bog'lanish 💬</a>
+  </div>
+</div>
+
+<!-- HAQIMDA -->
+<section id="haqimda">
+  <div class="reveal">
+    <p class="sec-label">01 — Haqimda</p>
+    <h2>Men <span>kim</span>man?</h2>
+    <div class="divider"></div>
+    <div class="about-grid">
+      <div class="reveal-left">
+        <div class="about-text">
+          <p>Salom! Men Behruzbek, 15 yoshli yosh dasturchi. Xorazm viloyati, Yangariq tumani, Ostona qishlog'idan bo'lib, Najot Ta'lim Urganch filialida o'qiyman.</p>
+          <p>Dasturlashga qiziqaman va kelajakda professional dasturchi bo'lishni maqsad qilganman. HTML va CSS dan boshlab, JavaScript, Python, C va boshqa tillarga qadam qo'ymoqdaman.</p>
+        </div>
+        <div class="quote-box">"Kod yozish — bu shunchaki kompyuterga buyruq berish emas, bu dunyoni o'zgartirish usuli."</div>
+      </div>
+      <div class="reveal-right">
+        <div class="about-stats">
+          <div class="stat-card"><div class="stat-num">15</div><div class="stat-lbl">Yosh</div></div>
+          <div class="stat-card"><div class="stat-num">9</div><div class="stat-lbl">Sinf</div></div>
+          <div class="stat-card"><div class="stat-num">7+</div><div class="stat-lbl">Til</div></div>
+          <div class="stat-card"><div class="stat-num">1</div><div class="stat-lbl">Sertifikat</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAQSADLAR -->
+<section id="maqsadlar">
+  <div class="reveal">
+    <p class="sec-label">03 — Maqsadlar</p>
+    <h2>Kelajak <span>rejalar</span></h2>
+    <div class="divider"></div>
+    <div class="goals-grid">
+      <div class="card goal-card"><div class="g-icon">🌐</div><div><div class="g-title">JavaScript o'rganish</div><div class="g-desc">React bilan zamonaviy veb-saytlar yaratish</div></div></div>
+      <div class="card goal-card"><div class="g-icon">🐍</div><div><div class="g-title">Python chuqurlashtirish</div><div class="g-desc">Algoritmlar va AI yo'nalishida rivojlanish</div></div></div>
+      <div class="card goal-card"><div class="g-icon">📱</div><div><div class="g-title">Mobil ilova yaratish</div><div class="g-desc">Flutter bilan birinchi mobil ilovamni yaratish</div></div></div>
+      <div class="card goal-card"><div class="g-icon">🎓</div><div><div class="g-title">TU Munich — Germaniya</div><div class="g-desc">Texnische Universität München — dunyo top 50</div></div></div>
+      <div class="card goal-card"><div class="g-icon">🏆</div><div><div class="g-title">Olimpiadada qatnashish</div><div class="g-desc">Xalqaro dasturlash olimpiadasida ishtirok etish</div></div></div>
+      <div class="card goal-card"><div class="g-icon">💼</div><div><div class="g-title">Freelance boshlash</div><div class="g-desc">Birinchi buyurtmamni olish va muvaffaqiyatli bajarish</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOYIHALAR -->
+<section id="loyihalar">
+  <div class="reveal">
+    <p class="sec-label">04 — Loyihalar</p>
+    <h2>Mening <span>loyihalarim</span></h2>
+    <div class="divider"></div>
+    <div class="projects-grid">
+      <div class="card project-card">
+        <div class="p-tag">HTML · CSS</div>
+        <div class="p-title">Portfolio Sayt</div>
+        <div class="p-desc">Shaxsiy portfolio saytim. Particles animatsiya, dark/light mode va professional dizayn.</div>
+      </div>
+      <div class="card project-card">
+        <div class="p-tag">HTML</div>
+        <div class="p-title">Birinchi Sahifa</div>
+        <div class="p-desc">Dasturlash hayotimda yozgan birinchi HTML sahifam. Hamma narsa shu yerdan boshlandi!</div>
+      </div>
+      <div class="card project-card">
+        <div class="p-tag">Kelasi · JS</div>
+        <div class="p-title">JavaScript Kalkulyator</div>
+        <div class="p-desc">JavaScript o'rganib bo'lgach zamonaviy kalkulyator yarataman.</div>
+      </div>
+      <div class="card project-card">
+        <div class="p-tag">Kelasi · Python</div>
+        <div class="p-title">Python O'yin</div>
+        <div class="p-desc">Python bilan birinchi to'liq o'yinim — tez orada!</div>
+      </div>
+    </div>
+
+    <!-- XOTIRA O'YINI -->
+    <div class="game-wrapper reveal">
+      <div class="card game-box">
+        <div class="game-header">
+          <div>
+            <div class="game-title">🃏 Xotira O'yini</div>
+            <div class="game-subtitle">Juft kartochkalarni toping!</div>
+          </div>
+          <div class="game-info">
+            <span>Urinish: <b id="moves">0</b></span>
+            <span>Juft: <b id="pairs">0</b>/8</span>
+          </div>
+        </div>
+        <div class="memory-grid" id="memoryGrid"></div>
+        <button class="game-btn" onclick="initMemory()">🔄 Qayta boshlash</button>
+        <div class="win-msg" id="winMsg">🎉 Zo'r! Barcha juftlarni topdingiz!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERTIFIKATLAR -->
+<section id="sertifikatlar">
+  <div class="reveal">
+    <p class="sec-label">05 — Sertifikatlar</p>
+    <h2>Mening <span>sertifikatlarim</span></h2>
+    <div class="divider"></div>
+    <div class="card cert-card">
+      <div class="cert-top">
+        <div class="cert-badge">🏆 Rasmiy Sertifikat</div>
+        <div class="cert-year">2025</div>
+      </div>
+      <div class="cert-title">Kompyuter Savodxonligi</div>
+      <div class="cert-org">Technology Village · IT Park Xorazm</div>
+      <div class="cert-desc">3 oylik "Kompyuter Savodxonligi" kursini muvaffaqiyatli tugatganligi uchun taqdirlanadi. Kurs davomida kompyuter asoslari, MS Office va internet savodxonligi bo'yicha bilimlar olindi.</div>
+      <div class="cert-footer">
+        <div class="cert-date">📅 2025-yil</div>
+        <div class="cert-num">№ 12122</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOG'LANISH -->
+<section id="boglanish">
+  <div class="reveal">
+    <p class="sec-label">06 — Bog'lanish</p>
+    <h2>Mening bilan <span>bog'laning</span></h2>
+    <div class="divider"></div>
+    <div class="contact-grid">
+      <div class="card contact-card">
+        <div class="c-icon c-blue">📍</div>
+        <div><div class="c-label">Hudud</div><div class="c-val">Yangariq tumani, Xorazm</div></div>
+      </div>
+      <a href="https://maps.app.goo.gl/sF6wTY3EEgKNT2J67" target="_blank" class="card contact-card">
+        <div class="c-icon c-green">🏫</div>
+        <div><div class="c-label">O'quv joyi</div><div class="c-val">Najot Ta'lim, Urganch</div></div>
+      </a>
+      <a href="mailto:behruzbekbekturdiyev011@gmail.com" class="card contact-card">
+        <div class="c-icon c-red">✉️</div>
+        <div><div class="c-label">Email</div><div class="c-val">behruzbekbekturdiyev011@gmail.com</div></div>
+      </a>
+      <a href="https://t.me/bekturdiyefv" target="_blank" class="card contact-card">
+        <div class="c-icon c-tg">✈️</div>
+        <div><div class="c-label">Telegram</div><div class="c-val">@bekturdiyefv</div></div>
+      </a>
+      <a href="https://www.instagram.com/bekturdiyefv" target="_blank" class="card contact-card">
+        <div class="c-icon c-ig">📷</div>
+        <div><div class="c-label">Instagram</div><div class="c-val">@bekturdiyefv</div></div>
+      </a>
+      <a href="https://www.youtube.com/channel/UCu2CE31G63Mfru3_gWDYt6Q" target="_blank" class="card contact-card">
+        <div class="c-icon c-yt">▶️</div>
+        <div><div class="c-label">YouTube</div><div class="c-val">Behruzbek Bekturdiyev</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 <b>Behruzbek Bekturdiyev</b> — Barcha huquqlar himoyalangan 💙</p>
+</footer>
+
+<script>
+// PARTICLES
+const canvas=document.getElementById('bg');
+const ctx=canvas.getContext('2d');
+let W=canvas.width=window.innerWidth,H=canvas.height=window.innerHeight;
+const pts=[];
+for(let i=0;i<100;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.3,dx:(Math.random()-0.5)*0.4,dy:(Math.random()-0.5)*0.4,o:Math.random()*0.35+0.08});
+function drawP(){
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p=>{
+    p.x+=p.dx;p.y+=p.dy;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+    if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(67,97,238,${p.o})`;ctx.fill();
+  });
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+    const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<130){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(67,97,238,${0.1*(1-d/130)})`;ctx.lineWidth=0.5;ctx.stroke();}
+  }
+  requestAnimationFrame(drawP);
+}
+drawP();
+window.addEventListener('resize',()=>{W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;});
+
+// TYPING
+const txts=["Yosh dasturchi 💻","HTML / CSS yozaman 🎨","Kelajakda Developer bo'laman 🚀","Xorazmdan dunyo sari 🌍","C dasturlashni bilaman ⚙️"];
+let ti=0,ci=0,del=false;
+function type(){
+  const el=document.getElementById('typing'),cur=txts[ti];
+  if(!del){el.textContent=cur.substring(0,ci++);if(ci>cur.length){del=true;setTimeout(type,1800);return;}}
+  else{el.textContent=cur.substring(0,ci--);if(ci<0){del=false;ti=(ti+1)%txts.length;}}
+  setTimeout(type,del?40:80);
+}
+type();
+
+// SCROLL REVEAL
+const allReveals=document.querySelectorAll('.reveal,.reveal-left,.reveal-right');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:0.08});
+allReveals.forEach(r=>obs.observe(r));
+
+// THEME
+let isDark=true;
+function toggleTheme(){
+  isDark=!isDark;
+  document.body.classList.toggle('light');
+  document.getElementById('themeBtn').textContent=isDark?'🌙 Dark':'☀️ Light';
+}
+
+// NAV BURGER
+function toggleNav(){
+  const nl=document.getElementById('navList');
+  nl.classList.toggle('open');
+  document.getElementById('burgerBtn').textContent=nl.classList.contains('open')?'✕':'☰';
+}
+document.querySelectorAll('#navList a').forEach(a=>a.addEventListener('click',()=>{
+  document.getElementById('navList').classList.remove('open');
+  document.getElementById('burgerBtn').textContent='☰';
+}));
+
+// CURSOR GLOW
+const orb=document.getElementById('glowOrb');
+if(window.matchMedia('(pointer:fine)').matches){
+  document.addEventListener('mousemove',e=>{
+    orb.style.left=e.clientX+'px';
+    orb.style.top=e.clientY+'px';
+  });
+}
+
+// BACK TO TOP
+const toTopBtn=document.getElementById('toTop');
+window.addEventListener('scroll',()=>{
+  toTopBtn.classList.toggle('show',window.scrollY>500);
+});
+
+// PROJECT CARD TILT
+document.querySelectorAll('.project-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=e.clientX-r.left,y=e.clientY-r.top;
+    const rx=((y/r.height)-0.5)*-8,ry=((x/r.width)-0.5)*8;
+    card.style.transform=`perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-5px)`;
+  });
+  card.addEventListener('mouseleave',()=>{card.style.transform='';});
+});
+
+// SKILL BARS - animate on scroll into view
+const skillObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.skill-row').forEach(row=>{
+        row.querySelector('.skill-fill').style.width=row.dataset.pct+'%';
+      });
+      skillObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.3});
+const skillsListEl=document.getElementById('skillsList');
+if(skillsListEl)skillObs.observe(skillsListEl);
+
+// CONFETTI
+function launchConfetti(){
+  const colors=['#4361ee','#06d6a0','#f72585','#ffd166'];
+  for(let i=0;i<60;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.opacity=Math.random()*0.6+0.4;
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    const dur=2200+Math.random()*1400;
+    c.animate([
+      {transform:c.style.transform+' translateY(0)'},
+      {transform:`rotate(${Math.random()*720}deg) translateY(${window.innerHeight+40}px)`}
+    ],{duration:dur,easing:'ease-in'});
+    setTimeout(()=>c.remove(),dur);
+  }
+}
+
+// XOTIRA O'YINI
+const emojis=['🚀','🐍','⚡','🎮','💻','🌐','🏆','🔥'];
+let cards=[],flipped=[],matched=0,moves=0,lock=false;
+function initMemory(){
+  const all=[...emojis,...emojis].sort(()=>Math.random()-0.5);
+  cards=[];flipped=[];matched=0;moves=0;lock=false;
+  document.getElementById('moves').textContent=0;
+  document.getElementById('pairs').textContent=0;
+  document.getElementById('winMsg').style.display='none';
+  const g=document.getElementById('memoryGrid');g.innerHTML='';
+  all.forEach((e,i)=>{
+    const c=document.createElement('div');
+    c.className='mem-card';c.dataset.val=e;
+    c.textContent='?';c.onclick=()=>flipCard(c);
+    g.appendChild(c);cards.push(c);
+  });
+}
+function flipCard(c){
+  if(lock||c.classList.contains('matched')||c.classList.contains('flipped'))return;
+  c.classList.add('flipped');c.textContent=c.dataset.val;flipped.push(c);
+  if(flipped.length===2){
+    moves++;document.getElementById('moves').textContent=moves;lock=true;
+    if(flipped[0].dataset.val===flipped[1].dataset.val){
+      flipped.forEach(x=>x.classList.add('matched'));
+      matched++;document.getElementById('pairs').textContent=matched;
+      flipped=[];lock=false;
+      if(matched===8){document.getElementById('winMsg').style.display='block';launchConfetti();}
+    }else{
+      setTimeout(()=>{flipped.forEach(x=>{x.classList.remove('flipped');x.textContent='?';});flipped=[];lock=false;},850);
+    }
+  }
+}
+initMemory();
+</script>
+</body>
+</html>
