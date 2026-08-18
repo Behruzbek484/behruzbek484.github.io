@@ -49,7 +49,7 @@ const io = new IntersectionObserver(entries => {
 revealEls.forEach(el => io.observe(el));
 
 /* stagger children of grids */
-document.querySelectorAll('.goals-grid, .projects-grid, .contact-grid').forEach(grid => {
+document.querySelectorAll('.goals-grid, .projects-grid, .contact-grid, .about-stats, .interests-grid').forEach(grid => {
   grid.classList.add('stagger');
   io.observe(grid);
 });
@@ -386,7 +386,64 @@ function flipCard(card) {
 }
 initMemory();
 
-/* ===================== CONFETTI ===================== */
+/* ===================== BUG SQUASH ===================== */
+let bugScore = 0, bugTimeLeft = 30, bugTimer = null, bugSpawner = null, bugRunning = false;
+const bugEmojis = ['🐛', '🐞', '🕷️'];
+
+function spawnBug() {
+  const grid = document.getElementById('bugGrid');
+  if (!grid) return;
+  const bug = document.createElement('div');
+  bug.className = 'bug-target';
+  bug.textContent = bugEmojis[Math.floor(Math.random() * bugEmojis.length)];
+  const gw = grid.clientWidth, gh = grid.clientHeight;
+  const x = Math.random() * (gw - 50), y = Math.random() * (gh - 50);
+  bug.style.left = x + 'px';
+  bug.style.top = y + 'px';
+  let squashedFlag = false;
+  bug.addEventListener('click', () => {
+    if (squashedFlag) return;
+    squashedFlag = true;
+    bugScore++;
+    document.getElementById('bugScore').textContent = bugScore;
+    bug.classList.add('squashed');
+    setTimeout(() => bug.remove(), 200);
+  });
+  grid.appendChild(bug);
+  setTimeout(() => { if (!squashedFlag) bug.remove(); }, 1100);
+}
+
+function startBugSquash() {
+  if (bugRunning) return;
+  bugRunning = true;
+  bugScore = 0; bugTimeLeft = 30;
+  document.getElementById('bugScore').textContent = 0;
+  document.getElementById('bugTime').textContent = 30;
+  document.getElementById('bugWinMsg').style.display = 'none';
+  document.getElementById('bugGrid').innerHTML = '';
+  document.getElementById('bugStartBtn').textContent = "o'ynalmoqda...";
+
+  bugSpawner = setInterval(spawnBug, 650);
+  bugTimer = setInterval(() => {
+    bugTimeLeft--;
+    document.getElementById('bugTime').textContent = bugTimeLeft;
+    if (bugTimeLeft <= 0) endBugSquash();
+  }, 1000);
+}
+
+function endBugSquash() {
+  clearInterval(bugSpawner);
+  clearInterval(bugTimer);
+  bugRunning = false;
+  document.getElementById('bugGrid').innerHTML = '';
+  document.getElementById('bugStartBtn').textContent = 'qayta boshlash';
+  const msg = document.getElementById('bugWinMsg');
+  msg.textContent = `natija: ${bugScore} ta xato tuzatildi!`;
+  msg.style.display = 'block';
+  if (bugScore >= 15) launchConfetti();
+}
+
+
 function launchConfetti() {
   const colors = ['#e6a94f', '#6fb7a8', '#f2ede4', '#8fb3ea'];
   for (let i = 0; i < 60; i++) {
