@@ -1,0 +1,23 @@
+{
+  "name": "behruzbek-portfolio",
+  "version": "2.0.0",
+  "description": "Behruzbek Bekturdiyev — Portfolio veb-sayti va AI Yordamchi",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "portfolio",
+    "developer",
+    "ai-assistant",
+    "express",
+    "javascript"
+  ],
+  "author": "Behruzbek Bekturdiyev",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}

@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Behruzbek Bekturdiyev — dasturchi</title>
-<meta name="description" content="Behruzbek Bekturdiyev — Yosh dasturchi portfolio"/>
+<title>Behruzbek Bekturdiyev — Dasturchi & AI Portfolio</title>
+<meta name="description" content="Behruzbek Bekturdiyev — 15 yoshli dasturchi portfolio sayti va shaxsiy AI yordamchisi"/>
 <meta name="theme-color" content="#0a0a12"/>
 <meta property="og:type" content="website"/>
-<meta property="og:title" content="Behruzbek Bekturdiyev — Yosh dasturchi"/>
-<meta property="og:description" content="15 yoshli dasturlashga ishtiyoqli yosh mutaxassisning portfolio sayti."/>
+<meta property="og:title" content="Behruzbek Bekturdiyev — Yosh dasturchi & AI Portfolio"/>
+<meta property="og:description" content="15 yoshli dasturlashga ishtiyoqli mutaxassisning portfolio sayti va AI yordamchisi."/>
 <link rel="icon" href="./img/B.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,14 +19,14 @@
 
 <div class="scroll-bar" id="scrollBar"></div>
 
-<!-- LetterGlitch ambient background -->
+
 <div class="glitch-bg">
   <canvas id="glitchCanvas"></canvas>
   <div class="glitch-vignette-outer"></div>
   <div class="glitch-vignette-center"></div>
 </div>
 
-<!-- TargetCursor -->
+
 <div class="target-cursor-wrapper" id="targetCursor">
   <div class="target-cursor-dot" id="cursorDot"></div>
   <div class="target-cursor-corner corner-tl"></div>
@@ -35,30 +35,39 @@
   <div class="target-cursor-corner corner-bl"></div>
 </div>
 
-<!-- WINDOW TITLEBAR NAV -->
+
 <nav>
   <div class="win-chrome">
     <span class="dot d-red"></span><span class="dot d-yellow"></span><span class="dot d-green"></span>
   </div>
-  <div class="logo">
-    <img src="./img/B.png" alt="Behruzbek Bekturdiyev logotipi"/>
+  <a href="#hero" class="logo cursor-target">
+    <div class="logo-box">
+      <img src="./img/B.png" alt="Behruzbek Bekturdiyev logotipi" onerror="this.style.display='none'; document.getElementById('logoSvgFallback').style.display='inline-flex';"/>
+      <span id="logoSvgFallback" class="logo-fallback" style="display:none;">B</span>
+    </div>
     <span class="logo-text">behruzbek<span class="dim">.dev</span></span>
-  </div>
+  </a>
   <ul id="navList" class="tabs">
     <li><a href="#haqimda" data-tab="about.js" class="cursor-target">about<span class="dim">.js</span></a></li>
     <li><a href="#maqsadlar" data-tab="goals.js" class="cursor-target">goals<span class="dim">.js</span></a></li>
     <li><a href="#loyihalar" data-tab="projects.js" class="cursor-target">projects<span class="dim">.js</span></a></li>
+    <li><a href="#oyin" data-tab="games.js" class="cursor-target">games<span class="dim">.js</span></a></li>
     <li><a href="#sertifikatlar" data-tab="certs.js" class="cursor-target">certs<span class="dim">.js</span></a></li>
     <li><a href="#boglanish" data-tab="contact.js" class="cursor-target">contact<span class="dim">.js</span></a></li>
   </ul>
-  <button class="theme-btn cursor-target" id="themeBtn" onclick="toggleTheme()">☾</button>
-  <button class="burger" id="burgerBtn" onclick="toggleNav()">☰</button>
+  <button class="nav-ai-btn cursor-target" id="navAiBtn" onclick="toggleAIChat()" title="AI Yordamchi bilan suhbat">
+    <span class="ai-sparkle">✦</span>
+    <span class="nav-ai-text">AI Yordamchi</span>
+    <span class="nav-ai-dot"></span>
+  </button>
+  <button class="theme-btn cursor-target" id="themeBtn" onclick="toggleTheme()" title="Mavzuni almashtirish">☾</button>
+  <button class="burger" id="burgerBtn" onclick="toggleNav()" aria-label="Menyu">☰</button>
 </nav>
 
-<button class="to-top cursor-target" id="toTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<button class="to-top cursor-target" id="toTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Yuqoriga chiqish">↑</button>
 
-<!-- HERO / TERMINAL -->
-<div class="hero">
+
+<section class="hero" id="hero">
   <div class="terminal">
     <div class="term-bar">
       <span class="dot d-red"></span><span class="dot d-yellow"></span><span class="dot d-green"></span>
@@ -71,12 +80,13 @@
   <div class="focus-container" id="trueFocus"></div>
   <div class="hero-btns">
     <a href="#loyihalar" class="btn-p spec-btn cursor-target">loyihalarni ko'rish</a>
+    <button class="btn-ai spec-btn cursor-target" onclick="toggleAIChat()">✦ AI yordamchi</button>
     <a href="#boglanish" class="btn-s spec-btn cursor-target">bog'lanish</a>
   </div>
   <div class="scroll-hint">scroll <span>↓</span></div>
-</div>
+</section>
 
-<!-- HAQIMDA -->
+
 <section id="haqimda">
   <div class="reveal">
     <p class="sec-label">// about.js</p>
@@ -93,7 +103,7 @@
       <div class="stat-card cursor-target"><div class="stat-num">15</div><div class="stat-lbl">yosh</div></div>
       <div class="stat-card cursor-target"><div class="stat-num">9</div><div class="stat-lbl">sinf</div></div>
       <div class="stat-card cursor-target"><div class="stat-num">6+</div><div class="stat-lbl">loyiha</div></div>
-      <div class="stat-card cursor-target"><div class="stat-num">4</div><div class="stat-lbl">til/texnologiya</div></div>
+      <div class="stat-card cursor-target"><div class="stat-num">4+</div><div class="stat-lbl">til/texnologiya</div></div>
     </div>
 
     <div class="about-cols">
@@ -103,7 +113,7 @@
           <div class="gadget-icon">💻</div>
           <div>
             <div class="gadget-name">Acer Aspire A515-57</div>
-            <div class="gadget-desc">Har kungi ish noutbugim — kod yozish, o'qish va loyihalarni ishga tushirish uchun. Batareya sog'ligi uchun 20–80% oralig'ida quvvatlab turaman.</div>
+            <div class="gadget-desc">Har kungi ish noutbukim — kod yozish, o'rganish va loyihalarni ishlab chiqish uchun. Batareya sog'lig'i uchun 20–80% oralig'ida quvvatlab turaman.</div>
           </div>
         </div>
       </div>
@@ -111,34 +121,35 @@
       <div class="about-block reveal-right">
         <p class="block-label">// interests.json</p>
         <div class="interests-grid">
-          <div class="interest-chip cursor-target">🎮 O'yin (har kuni)</div>
+          <div class="interest-chip cursor-target">🎮 O'yinlar (dam olishda)</div>
           <div class="interest-chip cursor-target">⚽ Futbol</div>
-          <div class="interest-chip cursor-target">🎸 Gitara (beginner)</div>
+          <div class="interest-chip cursor-target">🎸 Gitara (boshlang'ich)</div>
           <div class="interest-chip cursor-target">🎧 Musiqa</div>
+          <div class="interest-chip cursor-target">🤖 Sun'iy Intellekt</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- MAQSADLAR -->
+
 <section id="maqsadlar">
   <div class="reveal">
     <p class="sec-label">// goals.js</p>
-    <h2>Kelajak <span>rejalar</span></h2>
+    <h2>Kelajakdagi <span>rejalarim</span></h2>
     <div class="divider"></div>
     <div class="goals-grid">
-      <div class="card goal-card cursor-target"><div class="g-tag">js</div><div><div class="g-title">JavaScript chuqurlashtirish</div><div class="g-desc">React bilan zamonaviy, interaktiv veb-saytlar yaratish</div></div></div>
-      <div class="card goal-card cursor-target"><div class="g-tag">py</div><div><div class="g-title">Python va algoritmlar</div><div class="g-desc">Algoritmik fikrlash va backend yo'nalishida rivojlanish</div></div></div>
-      <div class="card goal-card cursor-target"><div class="g-tag">app</div><div><div class="g-title">Mobil ilova yaratish</div><div class="g-desc">Flutter yoki React Native bilan birinchi mobil ilovamni ishga tushirish</div></div></div>
-      <div class="card goal-card cursor-target"><div class="g-tag">edu</div><div><div class="g-title">TU Munich — Germaniya</div><div class="g-desc">Technische Universität München — dunyo top 50 universiteti</div></div></div>
-      <div class="card goal-card cursor-target"><div class="g-tag">cup</div><div><div class="g-title">Olimpiadada qatnashish</div><div class="g-desc">Xalqaro dasturlash olimpiadasida ishtirok etish</div></div></div>
-      <div class="card goal-card cursor-target"><div class="g-tag">$</div><div><div class="g-title">Freelance boshlash</div><div class="g-desc">Birinchi haqiqiy buyurtmamni olish va muvaffaqiyatli topshirish</div></div></div>
+      <div class="card goal-card cursor-target"><div class="g-tag">js</div><div><div class="g-title">JavaScript & React</div><div class="g-desc">Zamonaviy, yuqori tezlikda ishlaydigan interaktiv veb-ilovalar yaratish</div></div></div>
+      <div class="card goal-card cursor-target"><div class="g-tag">py</div><div><div class="g-title">Python va algoritmlar</div><div class="g-desc">Algoritmik fikrlash va kuchli backend tizimlar yo'nalishida rivojlanish</div></div></div>
+      <div class="card goal-card cursor-target"><div class="g-tag">app</div><div><div class="g-title">Mobil ilova yaratish</div><div class="g-desc">Flutter yoki React Native orqali birinchi foydali mobil ilovani ishga tushirish</div></div></div>
+      <div class="card goal-card cursor-target"><div class="g-tag">edu</div><div><div class="g-title">TU Munich — Germaniya</div><div class="g-desc">Technische Universität München — dunyoning top 50 nufuzli universitetlaridan birida tahsil olish</div></div></div>
+      <div class="card goal-card cursor-target"><div class="g-tag">cup</div><div><div class="g-title">Xalqaro olimpiadalar</div><div class="g-desc">Dasturlash bo'yicha nufuzli olimpiadalarda qatnashib, g'olib bo'lish</div></div></div>
+      <div class="card goal-card cursor-target"><div class="g-tag">$</div><div><div class="g-title">Freelance va Real Loyihalar</div><div class="g-desc">Xalqaro mijozlar bilan ishlab, sifatli raqamli mahsulotlar yaratish</div></div></div>
     </div>
   </div>
 </section>
 
-<!-- LOYIHALAR -->
+
 <section id="loyihalar">
   <div class="reveal">
     <p class="sec-label">// projects.js</p>
@@ -198,7 +209,7 @@
   </div>
 </section>
 
-<!-- O'YIN -->
+
 <section id="oyin">
   <div class="reveal">
     <p class="sec-label">// game.js</p>
@@ -208,8 +219,8 @@
       <div class="card game-box">
         <div class="game-header">
           <div>
-            <div class="game-title">xotira o'yini</div>
-            <div class="game-subtitle">Juft kartochkalarni toping</div>
+            <div class="game-title">Xotira o'yini</div>
+            <div class="game-subtitle">Dasturlash belgilarining juft kartochkalarini toping</div>
           </div>
           <div class="game-info">
             <span>urinish: <b id="moves">0</b></span>
@@ -218,23 +229,23 @@
         </div>
         <div class="memory-grid" id="memoryGrid"></div>
         <button class="game-btn spec-btn cursor-target" onclick="initMemory()">qayta boshlash</button>
-        <div class="win-msg" id="winMsg">barcha juftlar topildi</div>
+        <div class="win-msg" id="winMsg">Tabriklaymiz! Barcha juftliklar topildi 🎉</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- BUG SQUASH O'YIN -->
+
 <section id="bugsquash">
   <div class="reveal">
     <p class="sec-label">// bugsquash.js</p>
-    <h2>Xatolarni <span>tuzat</span></h2>
+    <h2>Xatolarni <span>tuzatish</span></h2>
     <div class="divider"></div>
     <div class="game-wrapper">
       <div class="card game-box">
         <div class="game-header">
           <div>
-            <div class="game-title">bug squash</div>
+            <div class="game-title">Bug Squash</div>
             <div class="game-subtitle">Ekranda chiqqan 🐛 larni tezroq bos, xatolarni tuzat!</div>
           </div>
           <div class="game-info">
@@ -250,13 +261,13 @@
   </div>
 </section>
 
-<!-- SERTIFIKATLAR -->
+
 <section id="sertifikatlar">
   <div class="reveal">
     <p class="sec-label">// certs.js</p>
     <h2>Mening <span>sertifikatlarim</span></h2>
     <div class="divider"></div>
-    <div class="card cert-card">
+    <div class="card cert-card cursor-target">
       <div class="cert-top">
         <div class="cert-badge">rasmiy sertifikat</div>
         <div class="cert-year">2025</div>
@@ -272,7 +283,7 @@
   </div>
 </section>
 
-<!-- BOG'LANISH -->
+
 <section id="boglanish">
   <div class="reveal">
     <p class="sec-label">// contact.js</p>
@@ -283,7 +294,7 @@
         <div class="c-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.3-7-11.5A7 7 0 0 1 19 9.5C19 14.7 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg></div>
         <div><div class="c-label">Hudud</div><div class="c-val">Yangariq tumani, Xorazm</div></div>
       </div>
-      <a href="https://maps.app.goo.gl/sF6wTY3EEgKNT2J67" target="_blank" class="card contact-card cursor-target">
+      <a href="https://maps.app.goo.gl/sF6wTY3EEgKNT2J67" target="_blank" rel="noopener noreferrer" class="card contact-card cursor-target">
         <div class="c-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 2 8l10 5 8-4.3V16h1.5V8L12 3Z"/><path d="M6 11.2V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.8l-6 3.2-6-3.2Z"/></svg></div>
         <div><div class="c-label">O'quv joyi</div><div class="c-val">Najot Ta'lim, Urganch</div></div>
       </a>
@@ -291,33 +302,143 @@
         <div class="c-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></div>
         <div><div class="c-label">Email</div><div class="c-val">behruzbekbekturdiyev011@gmail.com</div></div>
       </a>
-      <a href="https://t.me/bekturdiyefv" target="_blank" class="card contact-card cursor-target">
+      <a href="https://t.me/bekturdiyefv" target="_blank" rel="noopener noreferrer" class="card contact-card cursor-target">
         <div class="c-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 12 22 3l-3.5 18-6-4.5-3 3-.7-5.3z"/></svg></div>
         <div><div class="c-label">Telegram</div><div class="c-val">@bekturdiyefv</div></div>
       </a>
-      <a href="https://www.instagram.com/bekturdiyefv" target="_blank" class="card contact-card cursor-target">
+      <a href="https://www.instagram.com/bekturdiyefv" target="_blank" rel="noopener noreferrer" class="card contact-card cursor-target">
         <div class="c-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg></div>
         <div><div class="c-label">Instagram</div><div class="c-val">@bekturdiyefv</div></div>
       </a>
-      <a href="https://www.linkedin.com/in/behruzbek-bekturdiyev-a94838348" target="_blank" class="card contact-card cursor-target">
+      <a href="https://www.linkedin.com/in/behruzbek-bekturdiyev-a94838348" target="_blank" rel="noopener noreferrer" class="card contact-card cursor-target">
         <div class="c-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.7-1.9 4 0 4.7 2.6 4.7 6V21h-4v-5.3c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9V21H9z"/></svg></div>
         <div><div class="c-label">LinkedIn</div><div class="c-val">Behruzbek Bekturdiyev</div></div>
       </a>
-      <a href="https://x.com/Bekturdiyev_011" target="_blank" class="card contact-card cursor-target">
+      <a href="https://x.com/Bekturdiyev_011" target="_blank" rel="noopener noreferrer" class="card contact-card cursor-target">
         <div class="c-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M4 4l16 16M20 4 4 20"/></svg></div>
         <div><div class="c-label">X (Twitter)</div><div class="c-val">@Bekturdiyev_011</div></div>
       </a>
-      <a href="https://www.facebook.com/bekturdiyefv" target="_blank" class="card contact-card cursor-target">
+      <a href="https://www.facebook.com/bekturdiyefv" target="_blank" rel="noopener noreferrer" class="card contact-card cursor-target">
         <div class="c-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V5h-3c-2.2 0-4 1.8-4 4v2H7v4h3v8h4v-8h3l1-4h-4V9c0-.6.4-1 1-1z"/></svg></div>
         <div><div class="c-label">Facebook</div><div class="c-val">@bekturdiyefv</div></div>
       </a>
     </div>
+
+    
+    <div class="contact-form-card card">
+      <div class="p-file">
+        <span class="dot d-red"></span><span class="dot d-yellow"></span><span class="dot d-green"></span>
+        <span class="p-filename">sendMessage.js</span>
+      </div>
+      <div class="contact-form-body">
+        <div class="form-title">To'g'ridan-to'g'ri xabar yuborish</div>
+        <div class="form-subtitle">Loyiha, taklif yoki savolingiz bo'lsa, formani to'ldirib xabar qoldiring:</div>
+        <form id="contactForm" onsubmit="handleContactSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cName"><span class="c-key">const</span> senderName <span class="c-p">=</span></label>
+              <input type="text" id="cName" name="name" placeholder='"Ismingiz"' required class="form-control cursor-target" />
+            </div>
+            <div class="form-group">
+              <label for="cEmail"><span class="c-key">const</span> senderEmail <span class="c-p">=</span></label>
+              <input type="email" id="cEmail" name="email" placeholder='"email@namuna.uz"' required class="form-control cursor-target" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cSubject"><span class="c-key">const</span> subject <span class="c-p">=</span></label>
+            <input type="text" id="cSubject" name="subject" placeholder='"Loyiha / Taklif / Savol"' class="form-control cursor-target" />
+          </div>
+          <div class="form-group">
+            <label for="cMessage"><span class="c-key">const</span> message <span class="c-p">=</span></label>
+            <textarea id="cMessage" name="message" rows="4" placeholder='"Assalomu alaykum Behruzbek, loyiha bo`yicha..."' required class="form-control cursor-target"></textarea>
+          </div>
+          <div class="form-footer">
+            <button type="submit" id="contactSubmitBtn" class="btn-p spec-btn cursor-target">
+              <span id="contactBtnText">xabarni yuborish</span>
+            </button>
+            <div id="contactFeedback" class="form-feedback"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </div>
 </section>
 
 <footer>
-  <p><span class="c-key">console</span><span class="c-p">.</span><span class="c-fn">log</span><span class="c-p">(</span><span class="c-str">"© 2026 Behruzbek Bekturdiyev"</span><span class="c-p">);</span></p>
+  <p><span class="c-key">console</span><span class="c-p">.</span><span class="c-fn">log</span><span class="c-p">(</span><span class="c-str">"© 2026 Behruzbek Bekturdiyev — barcha huquqlar himoyalangan"</span><span class="c-p">);</span></p>
 </footer>
+
+
+<div class="ai-widget-wrapper" id="aiWidget">
+  
+  <button class="ai-float-btn cursor-target" id="aiFloatBtn" onclick="toggleAIChat()" aria-label="AI Yordamchini ochish">
+    <div class="ai-btn-pulse"></div>
+    <div class="ai-btn-inner">
+      <span class="ai-btn-icon">✦</span>
+      <span class="ai-btn-text">AI Yordamchi</span>
+    </div>
+    <span class="ai-online-dot" title="AI Yordamchi faol"></span>
+  </button>
+
+  
+  <div class="ai-chat-window card" id="aiChatWindow">
+    <div class="ai-chat-header">
+      <div class="win-chrome">
+        <span class="dot d-red" onclick="toggleAIChat()" title="Yopish"></span>
+        <span class="dot d-yellow" onclick="minimizeAIChat()" title="Kichraytirish"></span>
+        <span class="dot d-green" onclick="clearAIChat()" title="Tozalash"></span>
+      </div>
+      <div class="ai-chat-header-title">
+        <span class="ai-header-spark">✦</span>
+        <span>Behruzbek <b>AI Assistant</b></span>
+        <span class="ai-status-pill">online</span>
+      </div>
+      <button class="ai-close-btn cursor-target" onclick="toggleAIChat()" title="Yopish">✕</button>
+    </div>
+
+    
+    <div class="ai-chat-body" id="aiChatBody">
+      <div class="ai-msg ai-msg-bot">
+        <div class="ai-avatar">🤖</div>
+        <div class="ai-bubble">
+          <p>Assalomu alaykum! Men <b>Behruzbek Bekturdiyev</b>ning shaxsiy <b>AI yordamchisi</b>man. 😊</p>
+          <p>Mendan Behruzbekning <b>loyihalari</b>, <b>ko'nikmalari</b>, <b>maqsadlari</b> yoki <b>bog'lanish yo'llari</b> haqida so'rashingiz mumkin!</p>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="ai-suggestions" id="aiSuggestions">
+      <button class="ai-chip cursor-target" onclick="sendQuickPrompt(this)">👨‍💻 Behruzbek haqida</button>
+      <button class="ai-chip cursor-target" onclick="sendQuickPrompt(this)">🚀 Qanday loyihalari bor?</button>
+      <button class="ai-chip cursor-target" onclick="sendQuickPrompt(this)">🛠 Qaysi tillarni biladi?</button>
+      <button class="ai-chip cursor-target" onclick="sendQuickPrompt(this)">🎯 Kelajak rejalari</button>
+      <button class="ai-chip cursor-target" onclick="sendQuickPrompt(this)">📬 Bog'lanish ma'lumotlari</button>
+    </div>
+
+    
+    <div class="ai-chat-footer">
+      <form id="aiChatForm" onsubmit="handleAIChatSubmit(event)">
+        <div class="ai-input-wrap">
+          <textarea
+            id="aiChatInput"
+            rows="1"
+            placeholder="Savolingizni yozing..."
+            onkeydown="handleAIKeyDown(event)"
+            class="cursor-target"
+            required
+          ></textarea>
+          <button type="button" id="aiVoiceBtn" class="ai-voice-btn cursor-target" onclick="toggleVoiceInput()" title="Ovozli kiritish">🎤</button>
+          <button type="submit" id="aiSendBtn" class="ai-send-btn cursor-target" title="Yuborish">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+        </div>
+      </form>
+      <div class="ai-footer-note">✦ Sun'iy intellekt Behruzbekning portfolio ma'lumotlari asosida javob beradi</div>
+    </div>
+  </div>
+</div>
 
 <script src="./script.js"></script>
 </body>
