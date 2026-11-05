@@ -331,7 +331,7 @@ app.post('/api/chat', async (req, res) => {
 });
 
 
-app.post('/api/contact', (req, res) => {
+app.post('/api/contact', async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
 
@@ -359,7 +359,7 @@ app.post('/api/contact', (req, res) => {
       date: new Date().toISOString()
     };
 
-    
+    // Save to local messages log file
     const logPath = path.join(__dirname, 'messages.json');
     let messages = [];
     try {
@@ -373,6 +373,33 @@ app.post('/api/contact', (req, res) => {
     fs.writeFileSync(logPath, JSON.stringify(messages, null, 2), 'utf8');
 
     console.log(`[Yangi xabar] Kimdan: ${newContactMessage.name} (${newContactMessage.email}) - Mavzu: ${newContactMessage.subject}`);
+
+    // Send Telegram Notification to Behruzbek
+    const tgToken = process.env.TELEGRAM_BOT_TOKEN;
+    const tgChatId = process.env.TELEGRAM_CHAT_ID;
+    if (tgToken && tgChatId) {
+      try {
+        const text = `🔔 <b>Portfolio saytingizdan yangi xabar!</b>\n\n` +
+          `👤 <b>Kimdan:</b> ${newContactMessage.name}\n` +
+          `📧 <b>Email:</b> ${newContactMessage.email}\n` +
+          `📝 <b>Mavzu:</b> ${newContactMessage.subject}\n` +
+          `💬 <b>Xabar:</b>\n${newContactMessage.message}\n\n` +
+          `⏰ <i>${new Date().toLocaleString('uz-UZ')}</i>`;
+
+        await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: tgChatId,
+            text,
+            parse_mode: 'HTML'
+          }),
+          signal: AbortSignal.timeout(5000)
+        });
+      } catch (tgErr) {
+        console.warn('Telegram botga yuborishda xatolik:', tgErr.message);
+      }
+    }
 
     return res.json({
       success: true,

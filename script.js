@@ -540,6 +540,15 @@ function launchConfetti() {
 }
 
 
+/* =========================================================
+   TELEGRAM NOTIFICATION CONFIG
+   Sayt orqali kelgan xabarlar Telegramingizga kelishi uchun
+========================================================= */
+const TELEGRAM_CONFIG = {
+  botToken: "", // BotFather bergan token
+  chatId: ""    // Sizning Telegram Chat ID raqamingiz
+};
+
 async function handleContactSubmit(event) {
   event.preventDefault();
   const form = event.target;
@@ -560,11 +569,15 @@ async function handleContactSubmit(event) {
   if (btn) btn.disabled = true;
   if (btnText) btnText.textContent = "Yuborilmoqda...";
 
+  let sentViaServer = false;
+
+  // 1. Try sending to backend server (/api/contact)
   try {
     const res = await fetch('/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, subject, message })
+      body: JSON.stringify({ name, email, subject, message }),
+      signal: AbortSignal.timeout(6000)
     });
 
     if (res.ok) {
@@ -572,24 +585,61 @@ async function handleContactSubmit(event) {
       showContactFeedback(data.message || "Xabaringiz muvaffaqiyatli yuborildi!", 'success');
       form.reset();
       launchConfetti();
-    } else {
-      const err = await res.json().catch(() => ({}));
-      showContactFeedback(err.error || "Serverda xatolik yuz berdi. Telegram orqali yozishingiz mumkin: @bekturdiyefv", 'error');
+      sentViaServer = true;
     }
   } catch (err) {
-    
-    console.warn('Backend unavailable, saving locally:', err);
-    try {
-      const pending = JSON.parse(localStorage.getItem('portfolio_messages') || '[]');
-      pending.push({ name, email, subject, message, date: new Date().toISOString() });
-      localStorage.setItem('portfolio_messages', JSON.stringify(pending));
-    } catch {}
-    showContactFeedback("Rahmat! Xabaringiz qabul qilindi. Tezkor javob olish uchun Telegram orqali ham bog'lanishingiz mumkin: @bekturdiyefv", 'success');
-    form.reset();
-  } finally {
-    if (btn) btn.disabled = false;
-    if (btnText) btnText.textContent = "xabarni yuborish";
+    console.log('Backend server yoqilmagan, Telegram tekshirilmoqda...');
   }
+
+  // 2. If not sent via server (e.g. on GitHub Pages), send directly via Telegram Bot API
+  if (!sentViaServer) {
+    if (TELEGRAM_CONFIG.botToken && TELEGRAM_CONFIG.chatId) {
+      try {
+        const text = `🔔 <b>Portfolio saytingizdan yangi xabar!</b>\n\n` +
+          `👤 <b>Kimdan:</b> ${name}\n` +
+          `📧 <b>Email:</b> ${email}\n` +
+          `📝 <b>Mavzu:</b> ${subject || 'Portfolio orqali xabar'}\n` +
+          `💬 <b>Xabar:</b>\n${message}\n\n` +
+          `🌐 <i>GitHub Pages orqali yuborildi</i>`;
+
+        const tgRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CONFIG.chatId,
+            text,
+            parse_mode: 'HTML'
+          })
+        });
+
+        if (tgRes.ok) {
+          showContactFeedback("Rahmat! Xabaringiz to'g'ridan-to'g'ri Behruzbekning Telegramiga yuborildi!", 'success');
+          form.reset();
+          launchConfetti();
+        } else {
+          throw new Error('Telegram API error');
+        }
+      } catch (tgErr) {
+        console.warn('Telegram yuborishda xatolik:', tgErr);
+        saveLocallyAndFallback(name, email, subject, message, form);
+      }
+    } else {
+      saveLocallyAndFallback(name, email, subject, message, form);
+    }
+  }
+
+  if (btn) btn.disabled = false;
+  if (btnText) btnText.textContent = "xabarni yuborish";
+}
+
+function saveLocallyAndFallback(name, email, subject, message, form) {
+  try {
+    const pending = JSON.parse(localStorage.getItem('portfolio_messages') || '[]');
+    pending.push({ name, email, subject, message, date: new Date().toISOString() });
+    localStorage.setItem('portfolio_messages', JSON.stringify(pending));
+  } catch {}
+  showContactFeedback("Rahmat! Xabaringiz qabul qilindi. Tezkor javob olish uchun Telegram orqali ham bog'lanishingiz mumkin: @bekturdiyefv", 'success');
+  form.reset();
 }
 
 function showContactFeedback(msg, type) {
@@ -935,71 +985,6 @@ function getLocalAIAnswer(userMessage) {
       "Behruzbek bilan bog'lanish"
     ]
   };
-}
-
-
-
-async function handleContactSubmit(event) {
-  event.preventDefault();
-  const form = event.target;
-  const btn = document.getElementById('contactSubmitBtn');
-  const btnText = document.getElementById('contactBtnText');
-  const feedback = document.getElementById('contactFeedback');
-
-  const name = form.name.value.trim();
-  const email = form.email.value.trim();
-  const subject = form.subject.value.trim();
-  const message = form.message.value.trim();
-
-  if (!name || !email || !message) {
-    showContactFeedback("Iltimos, barcha zarur maydonlarni to'ldiring!", 'error');
-    return;
-  }
-
-  if (btn) btn.disabled = true;
-  if (btnText) btnText.textContent = "Yuborilmoqda...";
-
-  try {
-    const res = await fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, subject, message })
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      showContactFeedback(data.message || "Xabaringiz muvaffaqiyatli yuborildi!", 'success');
-      form.reset();
-      launchConfetti();
-    } else {
-      const err = await res.json().catch(() => ({}));
-      showContactFeedback(err.error || "Serverda xatolik yuz berdi. Telegram orqali yozishingiz mumkin: @bekturdiyefv", 'error');
-    }
-  } catch (err) {
-    
-    console.warn('Backend unavailable, saving locally:', err);
-    try {
-      const pending = JSON.parse(localStorage.getItem('portfolio_messages') || '[]');
-      pending.push({ name, email, subject, message, date: new Date().toISOString() });
-      localStorage.setItem('portfolio_messages', JSON.stringify(pending));
-    } catch {}
-    showContactFeedback("Rahmat! Xabaringiz qabul qilindi. Tezkor javob olish uchun Telegram orqali ham bog'lanishingiz mumkin: @bekturdiyefv", 'success');
-    form.reset();
-  } finally {
-    if (btn) btn.disabled = false;
-    if (btnText) btnText.textContent = "xabarni yuborish";
-  }
-}
-
-function showContactFeedback(msg, type) {
-  const el = document.getElementById('contactFeedback');
-  if (!el) return;
-  el.textContent = msg;
-  el.className = 'form-feedback ' + type;
-  el.style.display = 'inline-block';
-  setTimeout(() => {
-    el.style.display = 'none';
-  }, 7000);
 }
 
 
