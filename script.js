@@ -545,8 +545,8 @@ function launchConfetti() {
    Sayt orqali kelgan xabarlar Telegramingizga kelishi uchun
 ========================================================= */
 const TELEGRAM_CONFIG = {
-  botToken: "", // BotFather bergan token
-  chatId: ""    // Sizning Telegram Chat ID raqamingiz
+  botToken: "9140405945:AAFE-lPg1faG9HxiWx5lcy90lN0KW9iaguo",
+  chatId: "7225516678"
 };
 
 async function handleContactSubmit(event) {
