@@ -253,7 +253,7 @@ async function callGeminiAPI(userMessage, history = []) {
           maxOutputTokens: 600
         }
       }),
-      signal: AbortSignal.timeout(10000)
+      signal: AbortSignal.timeout(3000)
     });
 
     if (!response.ok) {
@@ -350,6 +350,15 @@ app.post('/api/contact', async (req, res) => {
       });
     }
 
+    const tgToken = process.env.TELEGRAM_BOT_TOKEN;
+    const tgChatId = process.env.TELEGRAM_CHAT_ID;
+    if (!tgToken || !tgChatId) {
+      return res.status(503).json({
+        success: false,
+        error: "Telegram sozlanmagan. Serverdagi TELEGRAM_BOT_TOKEN va TELEGRAM_CHAT_ID ni tekshiring."
+      });
+    }
+
     const newContactMessage = {
       id: Date.now().toString(),
       name: String(name).trim().slice(0, 100),
@@ -375,30 +384,30 @@ app.post('/api/contact', async (req, res) => {
     console.log(`[Yangi xabar] Kimdan: ${newContactMessage.name} (${newContactMessage.email}) - Mavzu: ${newContactMessage.subject}`);
 
     // Send Telegram Notification to Behruzbek
-    const tgToken = process.env.TELEGRAM_BOT_TOKEN;
-    const tgChatId = process.env.TELEGRAM_CHAT_ID;
-    if (tgToken && tgChatId) {
-      try {
-        const text = `🔔 <b>Portfolio saytingizdan yangi xabar!</b>\n\n` +
-          `👤 <b>Kimdan:</b> ${newContactMessage.name}\n` +
-          `📧 <b>Email:</b> ${newContactMessage.email}\n` +
-          `📝 <b>Mavzu:</b> ${newContactMessage.subject}\n` +
-          `💬 <b>Xabar:</b>\n${newContactMessage.message}\n\n` +
-          `⏰ <i>${new Date().toLocaleString('uz-UZ')}</i>`;
+    try {
+      const text = `🔔 Portfolio saytingizdan yangi xabar!\n\n` +
+        `👤 Kimdan: ${newContactMessage.name}\n` +
+        `📧 Email: ${newContactMessage.email}\n` +
+        `📝 Mavzu: ${newContactMessage.subject}\n` +
+        `💬 Xabar:\n${newContactMessage.message}\n\n` +
+        `⏰ ${new Date().toLocaleString('uz-UZ')}`;
 
-        await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: tgChatId,
-            text,
-            parse_mode: 'HTML'
-          }),
-          signal: AbortSignal.timeout(5000)
-        });
-      } catch (tgErr) {
-        console.warn('Telegram botga yuborishda xatolik:', tgErr.message);
+      const tgRes = await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: tgChatId, text }),
+        signal: AbortSignal.timeout(5000)
+      });
+      const tgResult = await tgRes.json();
+      if (!tgRes.ok || !tgResult.ok) {
+        throw new Error(tgResult.description || `HTTP ${tgRes.status}`);
       }
+    } catch (tgErr) {
+      console.error('Telegram botga yuborishda xatolik:', tgErr.message);
+      return res.status(502).json({
+        success: false,
+        error: "Xabar serverda saqlandi, lekin Telegramga yetkazilmadi. Bot tokeni va chat ID ni tekshiring."
+      });
     }
 
     return res.json({
@@ -428,9 +437,25 @@ if (require.main === module) {
     console.log(`🌐 Sayt manzili: http://localhost:${PORT}`);
     console.log(`🤖 AI Yordamchi: ${process.env.GEMINI_API_KEY ? 'Gemini API ulangan' : 'Smart Local NLP Engine faol'}`);
     console.log(`=======================================================`);
+
+    // Agar botni birga yurgizish kerak bo'lsa
+    const shouldStartBot = process.env.START_BOT === 'true' ||
+      (process.env.START_BOT !== 'false' && Boolean(process.env.TELEGRAM_BOT_TOKEN));
+    if (shouldStartBot) {
+      const { startPolling } = require('./bot');
+      startPolling().catch(botErr => {
+        console.error('Telegram bot ishga tushmadi:', botErr.message);
+      });
+    }
+
+    // Render.com bepul rejimida server uxlab qolmasligi uchun avtomatik Keep-Alive (har 10 daqiqada)
+    if (process.env.RENDER_EXTERNAL_URL) {
+      console.log(`📡 Render Keep-Alive faollashtirildi: ${process.env.RENDER_EXTERNAL_URL}`);
+      setInterval(() => {
+        fetch(`${process.env.RENDER_EXTERNAL_URL}/api/status`).catch(() => {});
+      }, 10 * 60 * 1000);
+    }
   });
 }
 
 module.exports = app;
-
-

@@ -17,12 +17,20 @@
   - Backend server ishlayotgan paytda `/api/chat` orqali ishlaydi (Gemini API kaliti qo'shilsa to'g'ridan-to'g'ri Google Gemini AI orqali javob beradi).
   - Agar server yoqilmagan bo'lsa yoki sayt **GitHub Pages**da ochilsa, AI yordamchi to'xtab qolmaydi — brauzerning o'zidagi mahalliy aqlli bilimlar bazasidan foydalanib bir zumda javob qaytaradi!
 
-### 2. ⚡ Backend Server (Node.js & Express)
+### 2. ⚡ Backend Server & 🤖 Telegram Bot
 - `server.js` yaratildi:
   - `GET /api/status`: Tizim holati va AI provider ma'lumotlari.
   - `POST /api/chat`: AI suhbat APIsi (Gemini API va lokal NLP mexanizmi bilan).
-  - `POST /api/contact`: Sayt orqali to'g'ridan-to'g'ri xabar yuborish APIsi (xabarlar `messages.json` faylida xavfsiz saqlanadi).
+  - `POST /api/contact`: Sayt orqali to'g'ridan-to'g'ri xabar yuborish APIsi (Behruzbekning Telegramiga bir zumda yetkaziladi).
   - Statik fayllarni xizmat ko'rsatish (`index.html`, `style.css`, `script.js`, `img/`).
+- `bot.js` — Ko'p funksiyali Telegram Bot (`@Behruzbek_murojat_bot`):
+  - 🎮 **O'yinlar:**
+    - 🎯 **Sonni top:** 1 dan 100 gacha bo'lgan sonni topish o'yini.
+    - 🪨✂️📄 **Tosh, Qaychi, Qog'oz:** Inline tugmalar bilan botga qarshi o'ynash.
+    - 🧠 **IT Viktorina:** Dasturlash bo'yicha qiziqarli testlar va ball hisoblash.
+    - 🎲 **Omadli Zar:** Tasodifiy omad sinovi.
+  - ✍️ **Murojaat yuborish:** Foydalanuvchilar bot orqali xabar yozganda to'g'ridan-to'g'ri Behruzbekning Telegramiga yetib boradi va Behruzbek o'sha xabarga Reply bosib javob yoza oladi.
+  - 🤖 **Gemini AI:** Bot ichida ham sun'iy intellekt bilan erkin muloqot qilish.
 
 ### 3. 🎨 Dizayn va UI/UX xatolarini tuzatish
 - **Mavzu (Dark/Light mode) xotirasi:** Oldin sahifa yangilanganda mavzu tanlovi o'chib ketardi. Endi `localStorage` orqali saqlanadi va brauzer sozlamalariga moslashadi.
@@ -58,6 +66,16 @@ Brauzeringizda oching:
 👉 **http://localhost:3000**
 
 ---
+
+### Telegram botni ishga tushirish
+1. `.env` faylida `TELEGRAM_BOT_TOKEN` va `TELEGRAM_CHAT_ID` qiymatlarini kiriting.
+2. `npm start` serverni va sozlangan botni birga ishga tushiradi. Botni alohida ishga tushirish uchun:
+   ```bash
+   npm run bot
+   ```
+3. Bot bilan Telegram chatini ochib `/start` yuboring; murojaatlarni qabul qiladigan admin akkaunti ham botga `/start` yuborgan bo'lishi kerak.
+
+Bir bot uchun polling rejimini faqat bitta jarayonda ishlating (`npm start` va `npm run bot` ni bir vaqtda bajarmang). Avtomatik bot ishga tushishini o'chirish uchun `.env` fayliga `START_BOT=false` qo'shing. Telegram bot tokeni va Gemini API kaliti avval kod ichida bo'lganligi sababli, ikkalasini ham yangilab, yangi qiymatlarni faqat `.env` fayliga kiriting.
 
 ## 🔑 Gemini AI kalitini ulash (ixtiyoriy)
 

@@ -540,21 +540,11 @@ function launchConfetti() {
 }
 
 
-/* =========================================================
-   TELEGRAM NOTIFICATION CONFIG
-   Sayt orqali kelgan xabarlar Telegramingizga kelishi uchun
-========================================================= */
-const TELEGRAM_CONFIG = {
-  botToken: "9140405945:AAFE-lPg1faG9HxiWx5lcy90lN0KW9iaguo",
-  chatId: "7225516678"
-};
-
 async function handleContactSubmit(event) {
   event.preventDefault();
   const form = event.target;
   const btn = document.getElementById('contactSubmitBtn');
   const btnText = document.getElementById('contactBtnText');
-  const feedback = document.getElementById('contactFeedback');
 
   const name = form.name.value.trim();
   const email = form.email.value.trim();
@@ -569,88 +559,40 @@ async function handleContactSubmit(event) {
   if (btn) btn.disabled = true;
   if (btnText) btnText.textContent = "Yuborilmoqda...";
 
-  let sentViaServer = false;
-
-  // 1. Try sending to backend server (/api/contact)
   try {
     const res = await fetch('/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, subject, message }),
-      signal: AbortSignal.timeout(6000)
+      signal: AbortSignal.timeout(8000)
     });
-
-    if (res.ok) {
-      const data = await res.json();
-      showContactFeedback(data.message || "Xabaringiz muvaffaqiyatli yuborildi!", 'success');
-      form.reset();
-      launchConfetti();
-      sentViaServer = true;
+    const result = await res.json().catch(() => null);
+    if (!res.ok || !result?.success) {
+      throw new Error(result?.error || "Xabar yuborilmadi. Backend serverni tekshiring.");
     }
-  } catch (err) {
-    console.log('Backend server yoqilmagan, Telegram tekshirilmoqda...');
+
+    showContactFeedback(result.message || "Xabaringiz Telegramga muvaffaqiyatli yuborildi! ✅", 'success');
+    form.reset();
+    launchConfetti();
+  } catch (error) {
+    console.warn('Xabar yuborishda xatolik:', error);
+    const tgUrl = `https://t.me/Behruzbek_murojat_bot`;
+    showContactFeedback(`Serverga ulanib bo'lmadi. To'g'ridan-to'g'ri Telegram boti orqali yozishingiz mumkin: <a href="${tgUrl}" target="_blank" style="color:var(--primary);text-decoration:underline;font-weight:600;">@Behruzbek_murojat_bot</a>`, 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+    if (btnText) btnText.textContent = "xabarni yuborish";
   }
-
-  // 2. If not sent via server (e.g. on GitHub Pages), send directly via Telegram Bot API
-  if (!sentViaServer) {
-    if (TELEGRAM_CONFIG.botToken && TELEGRAM_CONFIG.chatId) {
-      try {
-        const text = `🔔 <b>Portfolio saytingizdan yangi xabar!</b>\n\n` +
-          `👤 <b>Kimdan:</b> ${name}\n` +
-          `📧 <b>Email:</b> ${email}\n` +
-          `📝 <b>Mavzu:</b> ${subject || 'Portfolio orqali xabar'}\n` +
-          `💬 <b>Xabar:</b>\n${message}\n\n` +
-          `🌐 <i>GitHub Pages orqali yuborildi</i>`;
-
-        const tgRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: TELEGRAM_CONFIG.chatId,
-            text,
-            parse_mode: 'HTML'
-          })
-        });
-
-        if (tgRes.ok) {
-          showContactFeedback("Rahmat! Xabaringiz to'g'ridan-to'g'ri Behruzbekning Telegramiga yuborildi!", 'success');
-          form.reset();
-          launchConfetti();
-        } else {
-          throw new Error('Telegram API error');
-        }
-      } catch (tgErr) {
-        console.warn('Telegram yuborishda xatolik:', tgErr);
-        saveLocallyAndFallback(name, email, subject, message, form);
-      }
-    } else {
-      saveLocallyAndFallback(name, email, subject, message, form);
-    }
-  }
-
-  if (btn) btn.disabled = false;
-  if (btnText) btnText.textContent = "xabarni yuborish";
-}
-
-function saveLocallyAndFallback(name, email, subject, message, form) {
-  try {
-    const pending = JSON.parse(localStorage.getItem('portfolio_messages') || '[]');
-    pending.push({ name, email, subject, message, date: new Date().toISOString() });
-    localStorage.setItem('portfolio_messages', JSON.stringify(pending));
-  } catch {}
-  showContactFeedback("Rahmat! Xabaringiz qabul qilindi. Tezkor javob olish uchun Telegram orqali ham bog'lanishingiz mumkin: @bekturdiyefv", 'success');
-  form.reset();
 }
 
 function showContactFeedback(msg, type) {
   const el = document.getElementById('contactFeedback');
   if (!el) return;
-  el.textContent = msg;
+  el.innerHTML = msg;
   el.className = 'form-feedback ' + type;
   el.style.display = 'inline-block';
   setTimeout(() => {
     el.style.display = 'none';
-  }, 7000);
+  }, 9000);
 }
 
 
@@ -717,28 +659,25 @@ async function handleAIChatSubmit(event) {
   isAIBusy = true;
   const typingEl = showAITyping();
 
+  // Use the backend so API credentials are never exposed in the browser.
   try {
-    
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: userText, history: chatHistory }),
-      signal: AbortSignal.timeout(10000)
+      signal: AbortSignal.timeout(8000)
     });
-
-    if (response.ok) {
-      const data = await response.json();
-      removeAITyping(typingEl);
-      if (data.reply) {
-        streamAIBubble(data.reply);
-        chatHistory.push({ role: 'model', text: data.reply });
-        updateAISuggestions(data.suggestions);
-        return;
-      }
+    const data = await response.json().catch(() => null);
+    if (!response.ok || !data?.reply) {
+      throw new Error(data?.error || `Backend HTTP ${response.status}`);
     }
-    throw new Error('Backend unavailable');
+
+    removeAITyping(typingEl);
+    streamAIBubble(data.reply);
+    chatHistory.push({ role: 'model', text: data.reply });
+    updateAISuggestions(data.suggestions);
   } catch (err) {
-    
+    console.warn('AI backend javob bermadi, lokal javob ishlatilmoqda:', err.message);
     removeAITyping(typingEl);
     const fallback = getLocalAIAnswer(userText);
     streamAIBubble(fallback.reply);
@@ -747,6 +686,27 @@ async function handleAIChatSubmit(event) {
   } finally {
     isAIBusy = false;
   }
+}
+
+function generateSmartSuggestions(userText, aiReply) {
+  const msg = (userText || '').toLowerCase();
+  if (/(salom|hello|hi|hey)/i.test(msg)) {
+    return ["Behruzbek haqida", "Loyihalarini ko'rsat", "Dasturlash o'rgatib ber"];
+  }
+  if (/(loyiha|project)/i.test(msg)) {
+    return ["Doppicoin haqida batafsil", "Texnologiyalari", "Bog'lanish"];
+  }
+  if (/(til|texnologiya|skill|ko'nikma)/i.test(msg)) {
+    return ["Loyihalar ro'yxati", "Kelajak rejalari", "React haqida"];
+  }
+  if (/(maqsad|reja|goal|future|kelajak)/i.test(msg)) {
+    return ["TU Munich haqida", "Aloqa ma'lumotlari", "Loyihalar"];
+  }
+  if (/(aloqa|bog'lan|contact|telegram)/i.test(msg)) {
+    return ["Loyihalari", "Behruzbek kim?", "Texnologiyalari"];
+  }
+  // General suggestions
+  return ["Behruzbek haqida", "Dasturlash savoli", "Loyihalar", "Bog'lanish"];
 }
 
 function showAITyping() {
@@ -986,5 +946,3 @@ function getLocalAIAnswer(userMessage) {
     ]
   };
 }
-
-
